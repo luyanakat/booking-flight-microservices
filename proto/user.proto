@@ -1,0 +1,110 @@
+syntax = "proto3";
+package grpc;
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./;pb";
+
+message User {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  int64 customer_id = 4;
+  int64 access_id = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message AccessLevel {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 1;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+message ListUserRequest {
+  int64 page = 1;
+  int64 limit = 2;
+}
+
+message ListUserResponse {
+  repeated User user_list = 1;
+  int64 total = 2;
+  int64 page = 3;
+}
+
+message RegisterRequest {
+  int64 id = 1;
+  string email = 2;
+  string password = 3;
+  int64 customer_id = 4;
+  int64 access_id = 5;
+  string customer_name = 6;
+  string address = 8;
+  string phone_number = 9;
+  string identify_number = 10;
+  google.protobuf.Timestamp date_of_birth = 11;
+  string member_code = 12;
+}
+
+message RegisterResponse {
+  int64 user_id = 1;
+  int64 customer_id = 2;
+  string jwt_token = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  int64 id = 1;
+  string token = 2;
+}
+
+message ParseTokenRequest {
+    string token = 1;
+}
+
+message ParseTokenResponse {
+    User user = 1;
+}
+
+message UpdateUserRequest {
+  int64 access_id = 1;
+}
+
+message UpdateUserPasswordRequest {
+  int64 id = 1;
+  string old_password = 3;
+  string password = 2;
+}
+
+message GetAccessLevelRequest {
+  int64 id = 1;
+}
+
+service UserManager {
+  rpc CreateUser (User) returns (User);
+  rpc UpdateUser (UpdateUserRequest) returns (User);
+  rpc UpdateUserPassword (UpdateUserPasswordRequest) returns (User);
+  rpc GetAccessLevel(GetAccessLevelRequest) returns (AccessLevel);
+  rpc GetUser (GetUserRequest) returns (User);
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (User);
+  rpc ListUser (ListUserRequest) returns (ListUserResponse);
+  rpc RegisterCustomer (RegisterRequest) returns (RegisterResponse);
+  rpc Login (LoginRequest) returns (LoginResponse);
+  rpc ParseToken (ParseTokenRequest) returns (ParseTokenResponse);
+}

@@ -1,0 +1,85 @@
+syntax = "proto3";
+package grpc;
+import "google/protobuf/timestamp.proto";
+option go_package = "./;pb";
+
+message Booking {
+  int64 id = 1;
+  int64 customer_id = 2;
+  int64 flight_id = 3;
+  string code = 4;
+  string status = 5;
+  int64 ticket_id = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message CreateBookingRequest {
+  string flight_name = 1;
+  string email = 2;
+  string phone_number = 3;
+  string name = 4;
+  string address = 5;
+  google.protobuf.Timestamp date_of_birth = 6;
+  string identify_number = 7;
+  string member_code = 8;
+  int64 ticket_type = 9;
+}
+
+message Ticket {
+  int64 id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message GetBookingRequest {
+  int64 id = 1;
+  string code = 2;
+}
+
+message CancelBookingRequest {
+  string booking_code = 1;
+}
+
+message ListBookingRequest {
+  int64 page = 1;
+  int64 limit = 2;
+}
+
+message ListBookingResponse {
+  repeated Booking booking_list = 1;
+  int64 total = 2;
+  int64 page = 3;
+}
+
+message GetBookingHistoryRequest {
+  int64 customer_id = 1;
+  int64 page = 2;
+  int64 limit = 3;
+}
+
+message GetBookingHistoryResponse {
+  repeated Booking booking_list = 1;
+  int64 total = 2;
+  int64 page = 3;
+}
+
+message UpdateBookingStatusRequest {
+  int64 flight_id = 1;
+  string status = 2;
+}
+
+message UpdateBookingStatusResponse {
+  string status = 1;
+}
+
+service BookingManager {
+  rpc CreateBooking (CreateBookingRequest) returns (Booking);
+  rpc UpdateBooking (Booking) returns (Booking);
+  rpc CancelBooking (CancelBookingRequest) returns (Booking);
+  rpc GetBooking (GetBookingRequest) returns (Booking);
+  rpc UpdateBookingStatus (UpdateBookingStatusRequest) returns (UpdateBookingStatusResponse);
+  rpc ListBooking (ListBookingRequest) returns (ListBookingResponse);
+  rpc GetBookingHistory (GetBookingHistoryRequest) returns (GetBookingHistoryResponse);
+}

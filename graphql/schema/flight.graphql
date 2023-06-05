@@ -1,0 +1,91 @@
+type FlightOps {
+    createFlight(input: CreateFlightInput): String @goField(forceResolver: true)
+    updateFlight(id: Int!, input: UpdateFlightInput): String @goField(forceResolver: true)
+}
+
+type FlightQuery {
+    searchFlights(page: Int=1, limit: Int = 0, input: SearchFlightInput): SearchFlightResponse @goField(forceResolver: true)
+    flights(page: Int=1, limit: Int=0): CustomFlightResponse! @goField(forceResolver: true)
+}
+
+type Flight {
+    id: Int!
+    name: String!
+    from: String!
+    to: String!
+    departureDate: Time!
+    arrivalDate: Time!
+    available_first_slot: Int!
+    available_economy_slot: Int!
+    status: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type CustomFlightResponse {
+    data: [Flight!]
+    page: Int
+    limit: Int
+    total: Int
+}
+
+input CreateFlightInput {
+    name: String!
+    from: String!
+    to: String!
+    departureDate: String!
+    arrivalDate: String!
+    available_first_slot: Int!
+    available_economy_slot: Int!
+    status: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+input GetFlightInput {
+    from: String!
+    to: String!
+    departureDate: String!
+    arrivalDate: String!
+}
+
+type GetFlightResponse {
+    data: [Flight!]
+}
+
+input DeleteFlightInput {
+    id: Int!
+}
+
+type SearchFlightResponse {
+    data: [Flight!]
+    page: Int
+    limit: Int
+    total: Int
+}
+
+input SearchFlightInput {
+    from: String! = ""
+    to: String! = ""
+    departureDate: String! = ""
+    arrivalDate: String! = ""
+}
+
+input UpdateFlightInput {
+    name: String = ""
+    departureDate: String = ""
+    arrivalDate: String = ""
+    available_first_slot: Int = 0
+    available_economy_slot: Int = 0
+    status: String = ""
+    createdAt: Time
+    updatedAt: Time
+}
+
+extend type Mutation {
+    Flight: FlightOps! @goField(forceResolver: true)
+}
+
+extend type Query {
+    Flight: FlightQuery! @goField(forceResolver: true)
+}

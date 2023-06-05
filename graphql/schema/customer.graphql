@@ -1,0 +1,51 @@
+type CustomerOps {
+    changePassword(input: ChangePasswordInput): String @goField(forceResolver: true)
+    updateCustomer(input: UpdateCustomerInput): String @goField(forceResolver: true)
+}
+
+type CustomerQuery {
+    customers(page: Int = 1, limit: Int = 0): CustomCustomerResponse! @goField(forceResolver: true)
+}
+
+type Customer {
+    id: Int!
+    name: String!
+    email: String!
+    address: String!
+    phoneNumber: String!
+    identifyNumber: String!
+    dateOfBirth: String!
+    memberCode: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type CustomCustomerResponse {
+    data: [Customer!]
+    page: Int
+    limit: Int
+    total: Int
+}
+
+input ChangePasswordInput {
+    oldPassword: String!
+    newPassword: String!
+}
+
+input UpdateCustomerInput {
+    name: String = ""
+    email: String = ""
+    address: String = ""
+    phoneNumber: String = ""
+    identifyNumber: String = ""
+    dateOfBirth: String = ""
+    memberCode: String = ""
+}
+
+extend type Mutation {
+    Customer: CustomerOps! @goField(forceResolver: true)
+}
+
+extend type Query {
+    Customer: CustomerQuery! @goField(forceResolver: true)
+}

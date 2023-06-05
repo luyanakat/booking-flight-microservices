@@ -1,0 +1,79 @@
+syntax = "proto3";
+package grpc;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+option go_package = "./;pb";
+
+message Flight {
+    int64 id = 1;
+    string name = 2;
+    string from = 3;
+    string to = 4;
+    google.protobuf.Timestamp departure_date = 6;
+    google.protobuf.Timestamp arrival_date = 5;
+    int64 available_first_slot = 7;
+    int64 available_economy_slot = 8;
+    string status = 9;
+    google.protobuf.Timestamp created_at = 10;
+    google.protobuf.Timestamp updated_at = 11;
+}
+
+message GetFlightRequest {
+   string name = 1;
+   int64 id = 2;
+}
+
+message GetFlightResponse {
+    repeated Flight flight_list = 1;
+}
+
+message DeleteFlightRequest {
+    int64 id = 1;
+}
+
+message ListFlightRequest {
+    int64 page = 1;
+    int64 limit = 2;
+}
+
+message ListFlightResponse {
+    repeated Flight flight_list = 1;
+    int64 total = 2;
+    int64 page = 3;
+}
+
+message UpdateFlightRequest {
+    int64 id = 1;
+}
+
+message UpdateFlightSlotRequest {
+    int64 id = 1;
+    int64 ticket_type = 2;
+}
+
+message SearchFlightRequest {
+    int64 page = 1;
+    int64 limit = 2;
+    string from = 3;
+    string to = 4;
+    google.protobuf.Timestamp departure_date = 5;
+    google.protobuf.Timestamp arrival_date = 6;
+}
+
+message SearchFlightResponse {
+    repeated Flight flight_list = 1;
+    int64 total = 2;
+    int64 page = 3;
+}
+
+service FlightManager {
+    rpc CreateFlight (Flight) returns (Flight);
+    rpc UpdateFlight (Flight) returns (Flight);
+    rpc DeleteFlight (DeleteFlightRequest) returns (google.protobuf.Empty); // Mark flight as Cancel
+    rpc UpdateFlightSlot (UpdateFlightSlotRequest) returns (Flight);
+    rpc GetFlight (GetFlightRequest) returns (Flight);
+    rpc GetFlightById (GetFlightRequest) returns (Flight);
+    rpc SearchFlight (SearchFlightRequest) returns (SearchFlightResponse);
+    rpc ListFlight (ListFlightRequest) returns (ListFlightResponse);
+}

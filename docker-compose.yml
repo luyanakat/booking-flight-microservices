@@ -1,0 +1,114 @@
+version: '3.7'
+
+volumes:
+  postgres-user:
+    driver: local
+  postgres-customer:
+    driver: local
+  postgres-flight:
+    driver: local
+  postgres-booking:
+    driver: local
+
+services:
+#  graphql server
+  graphql:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - user-service
+      - customer-service
+      - flight-service
+      - booking-service
+    restart: always
+    ports:
+      - "3000:3000"
+
+# user service gRPC
+  user-service:
+    build:
+      context: .
+      dockerfile: ./grpc/user-grpc/user.Dockerfile
+    depends_on:
+      - user-db
+    restart: always
+    ports:
+      - "2224:2224"
+  user-db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-user:/var/lib/postgresql/data
+      - "./scripts/user-init.sql:/docker-entrypoint-initdb.d/user-init.sql"
+    ports:
+      - "5432:5432"
+
+# flight service gRPC
+  flight-service:
+    build:
+      context: .
+      dockerfile: ./grpc/flight-grpc/flight.Dockerfile
+    depends_on:
+      - flight-db
+    restart: always
+    ports:
+      - "2222:2222"
+  flight-db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-flight:/var/lib/postgresql/data
+      - "./scripts/flight-init.sql:/docker-entrypoint-initdb.d/flight-init.sql"
+    ports:
+      - "5433:5432"
+
+# customer service gRPC
+  customer-service:
+    build:
+      context: .
+      dockerfile: ./grpc/customer-grpc/customer.Dockerfile
+    depends_on:
+      - customer-db
+    restart: always
+    ports:
+      - "2223:2223"
+  customer-db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-customer:/var/lib/postgresql/data
+      - "./scripts/customer-init.sql:/docker-entrypoint-initdb.d/customer-init.sql"
+    ports:
+      - "5434:5432"
+
+# booking service gRPC
+  booking-service:
+    build:
+      context: .
+      dockerfile: ./grpc/booking-grpc/booking.Dockerfile
+    depends_on:
+      - booking-db
+    restart: always
+    ports:
+      - "2225:2225"
+  booking-db:
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-booking:/var/lib/postgresql/data
+      - "./scripts/booking-init.sql:/docker-entrypoint-initdb.d/booking-init.sql"
+    ports:
+      - "5435:5432"

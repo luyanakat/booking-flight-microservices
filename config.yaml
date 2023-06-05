@@ -1,0 +1,10 @@
+grpc:
+  flight: "flight-service:2222"
+  customer: "customer-service:2223"
+  user: "user-service:2224"
+  booking: "booking-service:2225"
+port:
+  flight: ":2222"
+  customer: ":2223"
+  user: ":2224"
+  booking: ":2225"

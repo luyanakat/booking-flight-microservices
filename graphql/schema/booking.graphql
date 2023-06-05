@@ -1,0 +1,110 @@
+type BookingOps {
+    createBooking(input: CreateBookingInput): CustomBookingResponse @goField(forceResolver: true)
+    cancelBooking(input: CancelBookingInput): CustomCancelResponse @goField(forceResolver: true)
+}
+
+type BookingQuery {
+    viewBooking(bookingCode: String!, identifyNumber: String! = ""): CustomViewBookingResponse @goField(forceResolver: true)
+    bookingHistory(page: Int = 1, limit: Int = 0): CustomBookingHistoryResponse @goField(forceResolver: true)
+    bookings(page: Int = 1, limit: Int = 0): BookingResponse @goField(forceResolver: true)
+}
+
+type Booking {
+    id: Int!
+    customerId: Int!
+    flightId: Int!
+    code: String!
+    status: String!
+    ticketId: Int!
+    createdAt: Time
+    updatedAt: Time
+}
+
+input CreateBookingInput {
+    flightName: String!
+    email: String
+    phoneNumber: String
+    name: String
+    address: String
+    dateOfBirth: String
+    identifyNumber: String
+    memberCode: String
+    ticketType: Int!
+}
+
+type CustomCreateBookingResponse {
+    bookingCode: String
+    bookingDate: Time
+    customerId: Int
+    flightId: Int
+    status: String
+}
+
+type CustomBookingResponse {
+    code: Int!
+    data: CustomCreateBookingResponse!
+}
+
+type CustomViewBookingResponse {
+    code: Int!
+    data: ViewBookingResponse!
+}
+
+type ViewBookingResponse {
+    bookingCode: String
+    bookingDate: Time
+    bookingStatus: String
+    customer: Customer
+    flight: Flight
+}
+
+input CancelBookingInput {
+    bookingCode: String!
+}
+
+type CustomCancelResponse {
+    code: Int!
+    data: CancelResponse
+}
+
+type CancelResponse {
+    bookingCode: String
+    cancelDate: Time
+    customerId: Int
+    flightId: Int
+    status: String
+}
+
+type CustomBookingHistoryResponse {
+    code: Int!
+    data: [ViewBookingResponse]
+    page: Int
+    limit: Int
+    total: Int
+}
+
+type BookingFullResponse {
+    id: Int!
+    customer: Customer!
+    flight: Flight!
+    code: String!
+    status: String!
+    ticketId: Int!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type BookingResponse {
+    data: [BookingFullResponse]!
+    page: Int
+    limit: Int
+    total: Int
+}
+
+extend type Mutation {
+    Booking: BookingOps! @goField(forceResolver: true)
+}
+
+extend type Query {
+    Booking: BookingQuery! @goField(forceResolver: true)
+}

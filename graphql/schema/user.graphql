@@ -1,0 +1,103 @@
+type UserOps {
+    createUser(input: CreateUserInput): String @goField(forceResolver: true)
+    updateUserAccessId(input: UpdateAccessIdInput!): String @goField(forceResolver: true)
+    updateUserPassword(input: UpdateUserPasswordInput): String @goField(forceResolver: true)
+    registerCustomer(input: RegisterCustomer): CustomRegisterResponse @goField(forceResolver: true)
+    login(input: LoginInput): CustomLoginResponse @goField(forceResolver: true)
+}
+
+type UserQuery {
+    users(page: Int=1, limit: Int=0): CustomUserResponse! @goField(forceResolver: true)
+}
+
+type User {
+    id: Int!
+    email: String!
+    password: String!
+    customerID: Int!
+    accessID: Int!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type Access {
+    id: Int!
+    name: String!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type UserResponse {
+    id: Int!
+    email: String!
+    password: String!
+    customer: Customer!
+    accessType: Access!
+    createdAt: Time
+    updatedAt: Time
+}
+
+type CustomUserResponse {
+    data: [UserResponse!]
+    page: Int
+    limit: Int
+    total: Int
+}
+
+input CreateUserInput {
+    email: String!
+    password: String!
+    accessID: Int!
+}
+
+input RegisterCustomer {
+    email: String!
+    password: String!
+    customerName: String!
+    address: String!
+    phoneNumber: String!
+    identifyNumber: String!
+    dateOfBirth: String!
+    memberCode: String = ""
+}
+
+input DeleteUserInput {
+    id: Int!
+}
+
+type RegisterUserRes {
+    token: String
+    id: Int
+}
+
+type CustomRegisterResponse {
+    data: User
+    token: String
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type CustomLoginResponse {
+    userId: Int
+    token: String
+}
+
+input UpdateAccessIdInput {
+    accessID: Int!
+}
+
+input UpdateUserPasswordInput {
+    oldPassword: String!
+    password: String!
+}
+
+type Mutation {
+    User: UserOps! @goField(forceResolver: true)
+}
+
+type Query {
+    User: UserQuery! @goField(forceResolver: true)
+}

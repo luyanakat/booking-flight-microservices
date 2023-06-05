@@ -1,0 +1,57 @@
+syntax = "proto3";
+package grpc;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+option go_package = "./;pb";
+
+message Customer {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  string address = 4;
+  string phone_number = 5;
+  string identify_number = 6;
+  google.protobuf.Timestamp date_of_birth = 7;
+  string member_code = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+message GetCustomerRequest {
+  int64 id = 1;
+}
+
+message GetCustomerByEmailRequest {
+  string email = 1;
+}
+
+message DeleteCustomerRequest {
+  int64 id = 1;
+}
+
+message ListCustomerRequest {
+  int64 page = 1;
+  int64 limit = 2;
+}
+
+message ListCustomerResponse {
+  repeated Customer customer_list = 1;
+  int64 total = 2;
+  int64 page = 3;
+}
+
+message ChangePasswordRequest {
+  string oldPassword = 2;
+  string newPassword = 3;
+}
+
+service CustomerManager {
+  rpc CreateCustomer (Customer) returns (Customer);
+  rpc UpdateCustomer (Customer) returns (Customer);
+  rpc ChangePassword (ChangePasswordRequest) returns (Customer);
+  rpc DeleteCustomer (DeleteCustomerRequest) returns (google.protobuf.Empty);
+  rpc GetCustomer (GetCustomerRequest) returns (Customer);
+  rpc GetCustomerByEmail (GetCustomerByEmailRequest) returns (Customer);
+  rpc ListCustomer (ListCustomerRequest) returns (ListCustomerResponse);
+}
